@@ -1,29 +1,20 @@
-import "./App.css";
-import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import React, { useState } from "react";
 import {
-  Dumbbell,
-  Info,
-  Target,
-  Calendar,
-  Clock,
   Activity,
   Award,
-  BarChart2,
-  PlayCircle,
   ChevronDown,
   ChevronUp,
+  Clock,
+  Check,
+  CheckCircle2,
+  PlayCircle,
+  Target,
+  Dumbbell,
 } from "lucide-react";
 
-function App() {
-  const [expandedDays, setExpandedDays] = useState(new Set([0])); // Primeiro dia expandido por padrão
-
-  const intensityColor = {
-    alta: "from-red-500 to-orange-500",
-    media: "from-yellow-500 to-yellow-600",
-    baixa: "from-green-500 to-green-600",
-  };
-
+export default function App() {
+  const [expandedDays, setExpandedDays] = useState(new Set([0]));
+  const [completedExercises, setCompletedExercises] = useState(new Set());
   const workoutData = [
     {
       day: "Segunda-feira",
@@ -411,35 +402,17 @@ function App() {
       ],
     },
   ];
-
-  const getIntensityLabel = (
-    exercise:
-      | {
-          name: string;
-          warmup: string;
-          sets: string;
-          reps: string;
-          notes: string;
-          muscle: string;
-          videoUrl: string;
-          tips: string;
-        }
-      | {
-          name: string;
-          sets: string;
-          reps: string;
-          notes: string;
-          muscle: string;
-          videoUrl: string;
-          tips: string;
-          warmup?: undefined;
-        }
-  ) => {
-    if (exercise.reps.includes("6-8") || exercise.reps.includes("8-10"))
-      return { label: "Alta", color: intensityColor.alta };
-    if (exercise.reps.includes("10-12"))
-      return { label: "Média", color: intensityColor.media };
-    return { label: "Moderada", color: intensityColor.baixa };
+  const toggleExercise = (dayIndex: number, exerciseIndex: number) => {
+    const exerciseId = `${dayIndex}-${exerciseIndex}`;
+    setCompletedExercises((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(exerciseId)) {
+        newSet.delete(exerciseId);
+      } else {
+        newSet.add(exerciseId);
+      }
+      return newSet;
+    });
   };
 
   const toggleDay = (index: number) => {
@@ -455,236 +428,344 @@ function App() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 bg-gray-50 min-h-screen">
-      {/* Header Card */}
-      <Card className="mb-6 overflow-hidden">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-90"></div>
-          <div className="relative p-4 md:p-8">
-            <div className="text-center">
-              <CardTitle className="text-xl md:text-3xl font-bold text-white mb-4 flex items-center justify-center gap-2">
-                <Dumbbell className="w-6 h-6 md:w-10 md:h-10" />
-                <span className="break-words">Treino Hipertrofia Avançado</span>
-              </CardTitle>
-              <p className="text-blue-100 text-sm md:text-lg">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Card - Full Width in Desktop */}
+      <div className="bg-blue-600 text-white p-6 lg:px-12">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+            <div className="mb-6 lg:mb-0">
+              <div className="flex items-center gap-3">
+                <Dumbbell className="w-8 h-8" />
+                <h1 className="text-2xl lg:text-3xl font-bold">
+                  Treino Hipertrofia Avançado
+                </h1>
+              </div>
+              <p className="text-blue-100 mt-2">
                 Programa otimizado para ganho de massa muscular
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-white mb-1">
-                  <Activity className="w-4 h-4" />
-                  <span className="font-semibold text-sm">Frequência</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:w-auto">
+              <div className="bg-blue-500/40 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <Activity className="w-5 h-5" />
+                  <div>
+                    <div className="font-medium">Frequência</div>
+                    <div className="text-blue-100 text-sm">6x por semana</div>
+                  </div>
                 </div>
-                <p className="text-blue-100 text-sm">6x por semana</p>
               </div>
-              <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-white mb-1">
-                  <Clock className="w-4 h-4" />
-                  <span className="font-semibold text-sm">Duração</span>
+
+              <div className="bg-blue-500/40 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5" />
+                  <div>
+                    <div className="font-medium">Duração</div>
+                    <div className="text-blue-100 text-sm">60-75 min</div>
+                  </div>
                 </div>
-                <p className="text-blue-100 text-sm">60-75 min</p>
               </div>
-              <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-white mb-1">
-                  <Award className="w-4 h-4" />
-                  <span className="font-semibold text-sm">Nível</span>
+
+              <div className="bg-blue-500/40 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <Award className="w-5 h-5" />
+                  <div>
+                    <div className="font-medium">Nível</div>
+                    <div className="text-blue-100 text-sm">
+                      Intermediário/Avançado
+                    </div>
+                  </div>
                 </div>
-                <p className="text-blue-100 text-sm">Intermediário/Avançado</p>
               </div>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Days List */}
-      <div className="space-y-6">
-        {workoutData.map((day, dayIndex) => (
-          <Card
-            key={dayIndex}
-            className={`bg-white shadow-lg border-none transition-all duration-200 ${
-              expandedDays.has(dayIndex) ? "shadow-xl" : "hover:shadow-md"
-            }`}
-          >
-            {/* Day Header */}
-            <button onClick={() => toggleDay(dayIndex)} className="w-full">
-              <CardHeader className="p-4 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-blue-100 p-2 rounded-lg">
-                      <Calendar className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div className="text-left">
-                      <h3 className="font-bold text-lg text-gray-900">
-                        {day.day}
-                      </h3>
-                      <div className="flex items-center gap-2 text-gray-600 text-sm">
-                        <Target className="w-4 h-4" />
-                        <span>{day.focus}</span>
+      {/* Content - Full Width Container */}
+      <div className="max-w-[1600px] mx-auto p-4 lg:p-8">
+        <div className="space-y-6">
+          {workoutData.map((day, dayIndex) => (
+            <div
+              key={dayIndex}
+              className="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden"
+            >
+              <button
+                onClick={() => toggleDay(dayIndex)}
+                className="w-full text-left"
+              >
+                <div className="p-4 lg:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-100 p-2 rounded-xl">
+                        <Target className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {day.day}
+                        </h3>
+                        <p className="text-gray-500">{day.focus}</p>
                       </div>
                     </div>
-                  </div>
-                  {expandedDays.has(dayIndex) ? (
-                    <ChevronUp className="w-5 h-5 text-blue-600" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-blue-600" />
-                  )}
-                </div>
-              </CardHeader>
-            </button>
-
-            {/* Expanded Content */}
-            {expandedDays.has(dayIndex) && (
-              <CardContent className="p-4 pt-0">
-                {/* Day Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-blue-800 mb-2">
-                      <Info className="w-4 h-4" />
-                      <span className="font-medium">Objetivo</span>
-                    </div>
-                    <p className="text-sm text-gray-700">{day.description}</p>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-blue-800 mb-2">
-                      <BarChart2 className="w-4 h-4" />
-                      <span className="font-medium">Volume</span>
-                    </div>
-                    <p className="text-sm text-gray-700">{day.volume}</p>
+                    {expandedDays.has(dayIndex) ? (
+                      <ChevronUp className="w-6 h-6 text-gray-400" />
+                    ) : (
+                      <ChevronDown className="w-6 h-6 text-gray-400" />
+                    )}
                   </div>
                 </div>
+              </button>
 
-                {/* Exercises Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                  {day.exercises.map((exercise, index) => {
-                    const intensity = getIntensityLabel(exercise);
-                    return (
-                      <div
-                        key={index}
-                        className="bg-gray-50 rounded-lg p-4 space-y-4"
-                      >
-                        {/* Exercise Header */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="bg-blue-100 p-2 rounded-lg">
-                              <Dumbbell className="w-5 h-5 text-blue-600" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-gray-900">
+              {expandedDays.has(dayIndex) && (
+                <div className="px-4 lg:px-6 pb-6">
+                  {/* Day Info Grid */}
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-blue-50 rounded-xl p-4">
+                      <h4 className="text-blue-800 font-medium mb-1">
+                        Objetivo
+                      </h4>
+                      <p className="text-gray-600">{day.description}</p>
+                    </div>
+                    <div className="bg-blue-50 rounded-xl p-4">
+                      <h4 className="text-blue-800 font-medium mb-1">Volume</h4>
+                      <p className="text-gray-600">{day.volume}</p>
+                    </div>
+                  </div>
+
+                  {/* Exercise Table - Desktop */}
+                  <div className="hidden lg:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="text-left p-4 font-medium text-gray-600">
+                            Status
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-600">
+                            Exercício
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-600">
+                            Grupo
+                          </th>
+                          <th className="text-center p-4 font-medium text-gray-600">
+                            Séries
+                          </th>
+                          <th className="text-center p-4 font-medium text-gray-600">
+                            Repetições
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-600">
+                            Aquecimento
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-600">
+                            Dicas
+                          </th>
+                          <th className="text-center p-4 font-medium text-gray-600">
+                            Intensidade
+                          </th>
+                          <th className="text-center p-4 font-medium text-gray-600">
+                            Tutorial
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {day.exercises.map((exercise, exerciseIndex) => {
+                          const exerciseId = `${dayIndex}-${exerciseIndex}`;
+                          const isCompleted =
+                            completedExercises.has(exerciseId);
+                          return (
+                            <tr
+                              key={exerciseIndex}
+                              className="border-b border-gray-100"
+                            >
+                              <td className="p-4">
+                                <button
+                                  onClick={() =>
+                                    toggleExercise(dayIndex, exerciseIndex)
+                                  }
+                                  className={`rounded-full p-1 transition-colors ${
+                                    isCompleted
+                                      ? "text-green-500 bg-green-100"
+                                      : "text-gray-300 hover:text-gray-400"
+                                  }`}
+                                >
+                                  {isCompleted ? (
+                                    <CheckCircle2 className="w-6 h-6" />
+                                  ) : (
+                                    <Check className="w-6 h-6" />
+                                  )}
+                                </button>
+                              </td>
+                              <td className="p-4 font-medium">
                                 {exercise.name}
-                              </h4>
-                              <p className="text-sm text-gray-500">
+                              </td>
+                              <td className="p-4 text-gray-600">
                                 {exercise.muscle}
-                              </p>
+                              </td>
+                              <td className="p-4 text-center font-medium text-blue-600">
+                                {exercise.sets}
+                              </td>
+                              <td className="p-4 text-center">
+                                {exercise.reps}
+                              </td>
+                              <td className="p-4 text-gray-600">
+                                {exercise.warmup || "-"}
+                              </td>
+                              <td className="p-4 text-gray-600">
+                                {exercise.tips}
+                              </td>
+                              <td className="p-4">
+                                <div className="flex justify-center">
+                                  <span
+                                    className={`px-3 py-1 rounded-full text-xs font-medium text-white ${
+                                      exercise.reps.includes("6-8") ||
+                                      exercise.reps.includes("8-10")
+                                        ? "bg-red-500"
+                                        : exercise.reps.includes("10-12")
+                                        ? "bg-yellow-500"
+                                        : "bg-green-500"
+                                    }`}
+                                  >
+                                    {exercise.reps.includes("6-8") ||
+                                    exercise.reps.includes("8-10")
+                                      ? "Alta"
+                                      : exercise.reps.includes("10-12")
+                                      ? "Média"
+                                      : "Moderada"}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex justify-center">
+                                  <a
+                                    href={exercise.videoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors"
+                                  >
+                                    <PlayCircle className="w-4 h-4" />
+                                    <span>Ver</span>
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Exercise Cards - Mobile */}
+                  <div className="lg:hidden space-y-4">
+                    {day.exercises.map((exercise, exerciseIndex) => {
+                      const exerciseId = `${dayIndex}-${exerciseIndex}`;
+                      const isCompleted = completedExercises.has(exerciseId);
+
+                      return (
+                        <div
+                          key={exerciseIndex}
+                          className={`rounded-xl p-4 transition-colors ${
+                            isCompleted ? "bg-green-50" : "bg-gray-50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-start gap-3">
+                              <button
+                                onClick={() =>
+                                  toggleExercise(dayIndex, exerciseIndex)
+                                }
+                                className={`mt-1 rounded-full p-1 transition-colors ${
+                                  isCompleted
+                                    ? "text-green-500 bg-green-100"
+                                    : "text-gray-300 bg-white hover:text-gray-400"
+                                }`}
+                              >
+                                {isCompleted ? (
+                                  <CheckCircle2 className="w-5 h-5" />
+                                ) : (
+                                  <Check className="w-5 h-5" />
+                                )}
+                              </button>
+                              <div>
+                                <h4 className="font-medium text-gray-900">
+                                  {exercise.name}
+                                </h4>
+                                <p className="text-sm text-gray-500">
+                                  {exercise.muscle}
+                                </p>
+                              </div>
+                            </div>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium text-white ${
+                                exercise.reps.includes("6-8") ||
+                                exercise.reps.includes("8-10")
+                                  ? "bg-red-500"
+                                  : exercise.reps.includes("10-12")
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              }`}
+                            >
+                              {exercise.reps.includes("6-8") ||
+                              exercise.reps.includes("8-10")
+                                ? "Alta"
+                                : exercise.reps.includes("10-12")
+                                ? "Média"
+                                : "Moderada"}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                            <div className="bg-white p-3 rounded-lg">
+                              <span className="text-sm text-gray-500 block">
+                                Séries
+                              </span>
+                              <span className="font-medium text-blue-600">
+                                {exercise.sets}
+                              </span>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg">
+                              <span className="text-sm text-gray-500 block">
+                                Repetições
+                              </span>
+                              <span className="font-medium">
+                                {exercise.reps}
+                              </span>
                             </div>
                           </div>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${intensity.color}`}
-                          >
-                            {intensity.label}
-                          </span>
-                        </div>
 
-                        {/* Exercise Details */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-white p-3 rounded-lg">
-                          <div>
-                            <span className="text-xs text-gray-500 block">
-                              Séries
-                            </span>
-                            <span className="font-medium text-blue-600">
-                              {exercise.sets}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-xs text-gray-500 block">
-                              Repetições
-                            </span>
-                            <span className="font-medium">{exercise.reps}</span>
-                          </div>
                           {exercise.warmup && (
-                            <div className="col-span-2">
-                              <span className="text-xs text-gray-500 block">
+                            <div className="bg-white p-3 rounded-lg mb-3">
+                              <span className="text-sm text-gray-500 block">
                                 Aquecimento
                               </span>
-                              <span className="font-medium text-sm">
+                              <span className="font-medium">
                                 {exercise.warmup}
                               </span>
                             </div>
                           )}
-                        </div>
 
-                        {/* Tips and Video */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2">
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <Info className="w-4 h-4" />
-                            <span className="text-sm">{exercise.tips}</span>
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <p className="text-sm text-gray-600">
+                              {exercise.tips}
+                            </p>
+                            <a
+                              href={exercise.videoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors"
+                            >
+                              <PlayCircle className="w-4 h-4" />
+                              <span>Tutorial</span>
+                            </a>
                           </div>
-                          <a
-                            href={exercise.videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors whitespace-nowrap"
-                          >
-                            <PlayCircle className="w-4 h-4" />
-                            <span className="text-sm font-medium">
-                              Ver Tutorial
-                            </span>
-                          </a>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </CardContent>
-            )}
-          </Card>
-        ))}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-
-      {/* Guidelines Card */}
-      <Card className="bg-gradient-to-br from-white to-gray-50 border-none shadow-md mt-6">
-        <CardContent className="p-4">
-          <h3 className="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2">
-            <Info className="w-5 h-5 text-blue-600" />
-            Diretrizes do Treino
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-blue-800 font-semibold">
-                <Clock className="w-4 h-4" />
-                Intervalos
-              </div>
-              <p className="text-sm text-gray-700">
-                • Compostos: 2-3 min
-                <br />• Isolados: 1-2 min
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-blue-800 font-semibold">
-                <Activity className="w-4 h-4" />
-                Execução
-              </div>
-              <p className="text-sm text-gray-700">
-                • Cadência: 2:1:2
-                <br />• Foco na Técnica
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-blue-800 font-semibold">
-                <BarChart2 className="w-4 h-4" />
-                Volume
-              </div>
-              <p className="text-sm text-gray-700">
-                • Progressive Overload
-                <br />• Ajuste conforme fadiga
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
-
-export default App;

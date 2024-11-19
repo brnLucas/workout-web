@@ -1,9 +1,8 @@
-import WorkoutPlan from "./components/WorkoutPlan";
+import "./App.css";
+import WorkoutPlan from "./components/workoutPlan";
 
-export default function App() {
-  return (
-    <div className="container mx-auto">
-      <WorkoutPlan />
-    </div>
-  );
+function App() {
+  return <WorkoutPlan></WorkoutPlan>;
 }
+
+export default App;

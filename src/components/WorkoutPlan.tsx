@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Dumbbell, Info, ArrowRight, Target, Video, Calendar, Clock, Activity, Award, BarChart2 } from 'lucide-react';
+import { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Dumbbell,
+  Info,
+  ArrowRight,
+  Target,
+  Video,
+  Calendar,
+  Clock,
+  Activity,
+  Award,
+  BarChart2,
+} from "lucide-react";
 
 const WorkoutPlan = () => {
-  const allWorkouts  = [
+  const allWorkouts = [
     {
       day: "Segunda-feira",
       focus: "Peito e Tríceps",
@@ -394,15 +405,39 @@ const WorkoutPlan = () => {
   const [selectedDay, setSelectedDay] = useState(allWorkouts[0]);
 
   const intensityColor = {
-    alta: 'from-red-500 to-orange-500',
-    media: 'from-yellow-500 to-yellow-600',
-    baixa: 'from-green-500 to-green-600'
+    alta: "from-red-500 to-orange-500",
+    media: "from-yellow-500 to-yellow-600",
+    baixa: "from-green-500 to-green-600",
   };
 
-  const getIntensityLabel = (exercise) => {
-    if (exercise.reps.includes('6-8') || exercise.reps.includes('8-10')) return { label: 'Alta', color: intensityColor.alta };
-    if (exercise.reps.includes('10-12')) return { label: 'Média', color: intensityColor.media };
-    return { label: 'Moderada', color: intensityColor.baixa };
+  const getIntensityLabel = (
+    exercise:
+      | {
+          name: string;
+          warmup: string;
+          sets: string;
+          reps: string;
+          notes: string;
+          muscle: string;
+          videoUrl: string;
+          tips: string;
+        }
+      | {
+          name: string;
+          sets: string;
+          reps: string;
+          notes: string;
+          muscle: string;
+          videoUrl: string;
+          tips: string;
+          warmup?: undefined;
+        }
+  ) => {
+    if (exercise.reps.includes("6-8") || exercise.reps.includes("8-10"))
+      return { label: "Alta", color: intensityColor.alta };
+    if (exercise.reps.includes("10-12"))
+      return { label: "Média", color: intensityColor.media };
+    return { label: "Moderada", color: intensityColor.baixa };
   };
 
   return (
@@ -420,7 +455,7 @@ const WorkoutPlan = () => {
                 Programa otimizado para ganho de massa muscular
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
               <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
                 <div className="flex items-center gap-2 text-white mb-2 justify-center">
@@ -441,7 +476,9 @@ const WorkoutPlan = () => {
                   <Award className="w-5 h-5" />
                   <span className="font-medium">Nível</span>
                 </div>
-                <p className="text-blue-100 text-center">Intermediário/Avançado</p>
+                <p className="text-blue-100 text-center">
+                  Intermediário/Avançado
+                </p>
               </div>
             </div>
           </div>
@@ -455,8 +492,8 @@ const WorkoutPlan = () => {
               onClick={() => setSelectedDay(workout)}
               className={`p-4 rounded-xl text-left transition-all transform hover:scale-105 ${
                 selectedDay.day === workout.day
-                  ? 'bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-lg'
-                  : 'bg-white hover:bg-gray-50 shadow hover:shadow-md'
+                  ? "bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-lg"
+                  : "bg-white hover:bg-gray-50 shadow hover:shadow-md"
               }`}
             >
               <div className="flex items-center gap-2 mb-2">
@@ -465,7 +502,13 @@ const WorkoutPlan = () => {
               </div>
               <div className="text-sm flex items-center gap-1">
                 <Target className="w-4 h-4" />
-                <span className={selectedDay.day === workout.day ? 'text-blue-100' : 'text-gray-600'}>
+                <span
+                  className={
+                    selectedDay.day === workout.day
+                      ? "text-blue-100"
+                      : "text-gray-600"
+                  }
+                >
                   {workout.focus}
                 </span>
               </div>
@@ -481,7 +524,9 @@ const WorkoutPlan = () => {
                 <Info className="w-5 h-5" />
                 Objetivo do Treino
               </CardTitle>
-              <p className="text-gray-600 text-center mt-2">{selectedDay.description}</p>
+              <p className="text-gray-600 text-center mt-2">
+                {selectedDay.description}
+              </p>
             </CardHeader>
           </Card>
 
@@ -491,7 +536,9 @@ const WorkoutPlan = () => {
                 <BarChart2 className="w-5 h-5" />
                 Volume do Dia
               </CardTitle>
-              <p className="text-gray-600 text-center mt-2">{selectedDay.volume}</p>
+              <p className="text-gray-600 text-center mt-2">
+                {selectedDay.volume}
+              </p>
             </CardHeader>
           </Card>
         </div>
@@ -525,14 +572,22 @@ const WorkoutPlan = () => {
                       <ArrowRight className="w-4 h-4 text-blue-600 flex-shrink-0" />
                       <div>
                         <div className="font-medium">{exercise.name}</div>
-                        <div className="text-xs text-gray-500 mt-1">{exercise.tips}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {exercise.tips}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-center text-gray-600">{exercise.warmup || "-"}</div>
-                    <div className="text-center font-medium text-blue-700">{exercise.sets}</div>
+                    <div className="text-center text-gray-600">
+                      {exercise.warmup || "-"}
+                    </div>
+                    <div className="text-center font-medium text-blue-700">
+                      {exercise.sets}
+                    </div>
                     <div className="text-center">{exercise.reps}</div>
                     <div className="text-center">
-                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${intensity.color}`}>
+                      <span
+                        className={`inline-flex px-3 py-1 rounded-full text-xs font-medium text-white bg-gradient-to-r ${intensity.color}`}
+                      >
                         {intensity.label}
                       </span>
                     </div>

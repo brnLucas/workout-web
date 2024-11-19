@@ -1,6 +1,4 @@
-// src/App.tsx
-import React from 'react';
-import WorkoutPlan from './components/WorkoutPlan'; // Certifique-se que o caminho está correto
+import WorkoutPlan from "./components/WorkoutPlan";
 
 export default function App() {
   return (
